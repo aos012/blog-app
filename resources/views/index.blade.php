@@ -1,0 +1,14 @@
+<x-layout>
+    <x-slot:title>
+        blog
+    </x-slot>
+    <h1>記事一覧</h1>
+    <a href="{{ route('posts.create') }}">新しい投稿を作成</a>
+    <ul>
+        @forelse ($posts as $post)
+        <li><a href="{{ route('posts.show', $post) }}">{{ $post->title }}</a></li>
+        @empty
+        <li>投稿された記事はありません</li>
+        @endforelse
+    </ul>
+</x-layout>
