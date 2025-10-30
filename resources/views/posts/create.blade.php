@@ -13,7 +13,7 @@
                     <input type="text" name="title" value="{{ old('title') }}">
                 </label>
                 @error('title')
-                    <p class="error">{{ $message }}</p>
+                <p class="error">{{ $message }}</p>
                 @enderror
             </div>
             <div>
@@ -22,7 +22,7 @@
                     <textarea name="body">{{ old('body') }}</textarea>
                 </label>
                 @error('body')
-                    <p class="error">{{ $message }}</p>
+                <p class="error">{{ $message }}</p>
                 @enderror
             </div>
             <div>

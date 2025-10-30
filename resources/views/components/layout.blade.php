@@ -9,6 +9,11 @@
 </head>
 
 <body>
+    @auth
+        <p>
+            {{ Auth::user()->name }} ログイン中
+        </p>
+    @endauth
     <div class="container">
         {{ $slot }}
     </div>

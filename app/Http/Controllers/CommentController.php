@@ -8,6 +8,7 @@ use App\Models\Comment;
 
 class CommentController extends Controller
 {
+    //新規コメントをDBに保存
     public function store(Request $request, Post $post)
     {
         $request->validate([
@@ -21,7 +22,7 @@ class CommentController extends Controller
 
         return redirect()->route('posts.show', $post);
     }
-
+    //削除処理
     public function destroy(Post $post, Comment $comment)
     {
         $comment->delete();

@@ -4,6 +4,10 @@
     </x-slot>
 
     <h1>{{ $post->title }}</h1>
+    <!-- trueなら記事更新時メッセージ表示 -->
+        @if(session('message'))
+            {{ session('message')}}
+        @endif
     <a href="{{ route('posts.edit', $post) }}">編集</a>
     <form method="post" action="{{ route('posts.destroy', $post) }}" class="delete-form">
         @method('DELETE')
