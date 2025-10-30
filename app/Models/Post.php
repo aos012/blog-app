@@ -12,8 +12,16 @@ class Post extends Model
     protected $fillable = [
         'title',
         'body',
+        'user_id',
     ];
-    //Commentモデルとリレーション
+
+    //投稿と紐付いたUserを取得
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    //投稿がもつCommentとリレーション
     public function comments()
     {
         return $this->hasMany(Comment::class);

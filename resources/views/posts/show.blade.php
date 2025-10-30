@@ -4,6 +4,7 @@
     </x-slot>
 
     <h1>{{ $post->title }}</h1>
+    <p>{{ $post->created_at }}</p>
     <!-- trueなら記事更新時メッセージ表示 -->
         @if(session('message'))
             {{ session('message')}}
@@ -15,12 +16,13 @@
         <button>記事を削除</button>
     </form>
     <p>{!!  nl2br(e($post->body)) !!}</p>
+    <p><a href="{{ route('posts.index') }}">一覧に戻る</a></p>
 
     <h2>コメント</h2>
         <ul>
             <!-- コメントをループで表示 -->
             @forelse ($post->comments as $comment)
-                <li>{{ $comment->body }}
+                <li>{{ $comment->body }}<br> {{ $comment->created_at }} / {{ $comment->user->name }}
                     <form method="post" action="{{ route('posts.comments.destroy', [$post, $comment]) }}" class="delete-form">
                         @csrf
                         @method('DELETE')
@@ -42,23 +44,12 @@
             <button>送信</button>
         </form>
 
-    <p><a href="{{ route('posts.index') }}">一覧に戻る</a></p>
+    
 
     <script>
         'use strict';
 
         {
-            //削除確認画面
-            // const form = document.querySelector('#delete-form');
-            // form.addEventListener('submit', (e) => {
-            //     e.preventDefault();
-
-            //     if (confirm('本当に削除しますか?') === false) {
-            //         return;
-            //     }
-
-            //     form.submit();
-            // });
             const deleteForms = document.querySelectorAll('.delete-form');
 
             deleteForms.forEach((form) => {

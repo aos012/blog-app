@@ -29,9 +29,12 @@ class PostController extends Controller
     //新規記事をデータベースに保存
     public function store(PostRequest $request) 
     {
+        $validated['user_id'] = auth()->id();
+
         $post = new Post();
         $post->title = $request->title;
         $post->body = $request->body;
+        $post->user_id = auth()->id(); 
         $post->save();
 
 

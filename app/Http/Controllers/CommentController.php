@@ -11,13 +11,16 @@ class CommentController extends Controller
     //新規コメントをDBに保存
     public function store(Request $request, Post $post)
     {
-        $request->validate([
+        $validated = $request->validate([
             'body' => 'required',
         ]);
+
+        $validated['user_id'] = auth()->id();
         
         $comment = new Comment();
         $comment->body = $request->body;
         $comment->post_id = $post->id;
+        $comment->user_id = auth()->id();
         $comment->save();
 
         return redirect()->route('posts.show', $post);

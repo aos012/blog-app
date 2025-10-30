@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('comments', function (Blueprint $table) {
-            $table->id();
-            $table->string('body');
-            $table->timestamps();
-            //postsテーブルとのリレーション
+        Schema::table('comments', function (Blueprint $table) {
+            //usersテーブルとのリレーション
             $table
-                ->foreignId('post_id')
+                ->foreignId('user_id')
                 ->constrained()
                 ->cascadeOnDelete();
         });
@@ -28,6 +25,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('comments');
+        Schema::table('comments', function (Blueprint $table) {
+            $table->dropColumn('user_id');
+        });
     }
 };

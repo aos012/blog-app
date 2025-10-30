@@ -11,7 +11,7 @@
         <ul>
             <!-- 投稿をループで表示 -->
             @forelse ($posts as $post)
-            <li><a href="{{ route('posts.show', $post) }}">{{ $post->title }}</a></li>
+            <li><a href="{{ route('posts.show', $post) }}">{{ $post->title }}</a><p>{{ $post->created_at }} / {{ $post->user->name }}</p></li>
             @empty <!-- 投稿がない場合 -->
             <li>投稿された記事はありません</li>
             @endforelse
