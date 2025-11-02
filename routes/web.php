@@ -7,15 +7,16 @@ use App\Http\Controllers\CommentController;
 
 Route::get('/dashboard', function () {
     return redirect()->route('posts.index'); 
-})->middleware(['auth', 'verified'])
-->name('dashboard');
+})->name('dashboard');
 
-Route::get('/', [PostController::class, 'index'])->middleware(['auth', 'verified'])
-->name('posts.index');
-// CRUDに関するルーティングをまとめて設定
-Route::resource('posts', PostController::class)->except(['index']);
+Route::get('/', [PostController::class, 'index'])->name('posts.index');
+// index,show以外のCRUDに関するルーティングをまとめて設定
+Route::resource('posts', PostController::class)->except(['index', 'show'])
+->middleware('auth');
+//show
+Route::get('posts/{post}', [PostController::class, 'show'])->name('posts.show');
 //コメント関連のルート
-Route::resource('posts.comments', CommentController::class)->only(['store', 'destroy']);
+Route::resource('posts.comments', CommentController::class)->only(['store', 'destroy'])->middleware('auth');
 //breezeが自動生成したルート
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

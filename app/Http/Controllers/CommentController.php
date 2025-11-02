@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use App\Models\Post;
 use App\Models\Comment;
 
@@ -28,6 +29,9 @@ class CommentController extends Controller
     //削除処理
     public function destroy(Post $post, Comment $comment)
     {
+        //投稿とユーザーidが一致しているユーザーのみ削除可能に
+        Gate::authorize('comment-operation', $comment);
+
         $comment->delete();
 
         return redirect()->route('posts.show', $post);

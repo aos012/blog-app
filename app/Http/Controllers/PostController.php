@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use App\Models\Post;
 use App\Http\Requests\PostRequest;
+
 
 class PostController extends Controller
 {
@@ -12,7 +14,7 @@ class PostController extends Controller
     public function index()
     {
         //投稿日時を新しい順に並べ替え取得
-        $posts = Post::orderBy('created_at', 'desc')->get();
+        $posts = Post::orderBy('created_at', 'desc')->with('user')->get();
         return view('index')->with(['posts' => $posts]);
     }
 
@@ -29,6 +31,7 @@ class PostController extends Controller
     //新規記事をデータベースに保存
     public function store(PostRequest $request) 
     {
+        //ログイン中のユーザーidを渡す
         $validated['user_id'] = auth()->id();
 
         $post = new Post();
@@ -48,6 +51,9 @@ class PostController extends Controller
     //更新内容を保存
     public function update(PostRequest $request, Post $post) 
     {
+        //投稿とユーザーidが一致しているユーザーのみ更新可能に
+        Gate::authorize('post-operation', $post);
+
         $post->title = $request->title;
         $post->body = $request->body;
         $post->save();
@@ -57,6 +63,9 @@ class PostController extends Controller
     //記事の削除処理
     public function destroy(Post $post)
     {
+        //投稿とユーザーidが一致しているユーザーのみ削除可能に
+        Gate::authorize('post-operation', $post);
+
         $post->delete();
 
         return redirect()->route('posts.index')->with('message', '記事を削除しました。');
