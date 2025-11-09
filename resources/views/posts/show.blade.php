@@ -4,6 +4,7 @@
     </x-slot>
 
     <h1>{{ $post->title }}</h1>
+    <a>{{ $post->user->name }}</a>
     <p>{{ $post->created_at }}</p>
     <!-- trueなら記事更新時メッセージ表示 -->
     @if(session('message'))
@@ -19,13 +20,16 @@
         </form>
     @endcan
     <p>{!!  nl2br(e($post->body)) !!}</p>
-    <p><a href="{{ route('posts.index') }}">一覧に戻る</a></p>
+    <p>
+        <a href="{{ route('posts.index') }}">一覧に戻る </a>/
+        <a href="{{ route('user.show', ['user' => $post->user]) }}">{{ $post->user->name }}さんの記事一覧</a>
+    </p>
 
     <h2>コメント</h2>
         <ul>
             <!-- コメントをループで表示 -->
             @forelse ($post->comments as $comment)
-                <li>{{ $comment->body }}<br> {{ $comment->created_at }} / {{ $comment->user->name }}
+                <li>{!! nl2br(e($comment->body)) !!}<br> {{ $comment->created_at }} / {{ $comment->user->name }}
 
                 @can('comment-operation', $comment)
                     <form method="post" action="{{ route('posts.comments.destroy', [$post, $comment]) }}" class="delete-form">
