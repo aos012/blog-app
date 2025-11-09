@@ -9,7 +9,7 @@
             @else <!-- プロフィール未記入 -->
                 <p>プロフィールは記入されていません</p>
             @endif
-        <h2>{{ $user->name }}さんの記事一覧</h2>
+        <h2>投稿一覧</h2>
             <!-- 投稿をループで表示 -->
             @forelse ($posts as $post)
             <li><a href="{{ route('posts.show', $post) }}">{{ $post->title }}</a><p>{{ $post->created_at }}</p></li>
