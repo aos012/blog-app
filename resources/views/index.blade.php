@@ -15,5 +15,8 @@
             @empty <!-- 投稿がない場合 -->
             <li>投稿された記事はありません</li>
             @endforelse
+            <div class="pegination">
+                {{ $posts->links() }}
+            </div>
         </ul>
 </x-layout>

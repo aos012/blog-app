@@ -13,8 +13,8 @@ class PostController extends Controller
     //記事一覧画面
     public function index()
     {
-        //投稿日時を新しい順に並べ替え取得
-        $posts = Post::orderBy('created_at', 'desc')->with('user')->get();
+        //投稿日時を新しい順に並べ替えペジネーションで10件ごとに取得
+        $posts = Post::orderBy('created_at', 'desc')->with('user')->paginate(10);
         return view('index')->with(['posts' => $posts]);
     }
 

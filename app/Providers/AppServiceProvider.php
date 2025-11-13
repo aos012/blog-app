@@ -38,5 +38,12 @@ class AppServiceProvider extends ServiceProvider
             }
             return false;
         });
+        //プロフィール編集権限
+        Gate::define('profile-edit', function (User $loginUser, User $profileUser){
+            if ($loginUser->id === $profileUser->id) {
+                return true;
+            }
+            return false;
+        }); 
     }
 }

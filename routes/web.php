@@ -20,6 +20,8 @@ Route::get('posts/{post}', [PostController::class, 'show'])->name('posts.show');
 Route::resource('posts.comments', CommentController::class)->only(['store', 'destroy'])->middleware('auth');
 //ユーザー詳細ページ(そのユーザーの投稿一覧も表示)
 Route::get('user/{user}', [UserController::class, 'show'])->name('user.show');
+//ユーザープロフィール編集関連
+Route::resource('user', UserController::class)->only('update', 'edit')->middleware('auth');
 //breezeが自動生成したルート
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
