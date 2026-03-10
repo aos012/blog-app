@@ -1,78 +1,110 @@
 <x-layout>
     <x-slot:title>
         {{ $post->title }}・blog
-    </x-slot>
+        </x-slot>
 
-    <h1>{{ $post->title }}</h1>
-    <a>{{ $post->user->name }}</a>
-    <p>{{ $post->created_at }}</p>
-    <!-- trueなら記事更新時メッセージ表示 -->
-    @if(session('message'))
-        {{ session('message')}}
-    @endif
-    <!-- その記事を投稿したユーザだけに削除・編集ボタンを表示 -->
-    @can('post-operation', $post)
-        <a href="{{ route('posts.edit', $post) }}">編集</a>
-        <form method="post" action="{{ route('posts.destroy', $post) }}" class="delete-form">
-            @method('DELETE')
-            @csrf
-            <button>記事を削除</button>
-        </form>
-    @endcan
-    <p>{!!  nl2br(e($post->body)) !!}</p>
-    <p>
-        <a href="{{ route('posts.index') }}">一覧に戻る </a>/
-        <a href="{{ route('user.show', ['user' => $post->user]) }}">{{ $post->user->name }}さんの記事一覧</a>
-    </p>
+        <div class="container" style="max-width: 800px;">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title">{{ $post->title }}</h1>
 
-    <h2>コメント</h2>
-        <ul>
-            <!-- コメントをループで表示 -->
-            @forelse ($post->comments as $comment)
-                <li>{!! nl2br(e($comment->body)) !!}<br> {{ $comment->created_at }} / {{ $comment->user->name }}
+                    <!-- 投稿者名、登校日時(更新日時)、ボタンを横並びにする -->
+                    <div class="container d-flex">
+                        <a href="{{ route('user.show', ['user' => $post->user]) }}">{{ $post->user->name }}</a>
+                        <p class="ms-2">{{ $post->created_at }}</p>
+                        <!-- もし記事が更新されていたら、更新日時も表示 -->
+                        @if($post->created_at < $post->updated_at)
+                            <p>({{ $post->updated_at }} 更新)</p>
+                            @endif
 
-                @can('comment-operation', $comment)
-                    <form method="post" action="{{ route('posts.comments.destroy', [$post, $comment]) }}" class="delete-form">
-                        @csrf
-                        @method('DELETE')
-                        <button>削除</button>
-                    </form>
-                @endcan    
-                </li>
-            @empty <!-- コメントがない場合 -->
-                <li>コメントがありません</li>
-            @endforelse 
-        </ul>
+                            @can('post-operation', $post)
+                            <div class="button-container d-flex align-items-center ms-auto">
+                                <a href="{{ route('posts.edit', $post) }}" class="btn btn-outline-secondary btn-sm">
+                                    編集
+                                </a>
+                                <form method="post" action="{{ route('posts.destroy', $post) }}" class="delete-form">
+                                    @method('DELETE')
+                                    @csrf
+                                    <button class="btn btn-danger btn-sm ms-1">記事を削除</button>
+                                </form>
+                            </div>
+                            @endcan
+                    </div>
+                    <!-- trueなら記事更新時メッセージ表示 -->
+                    @if(session('message'))
+                    {{ session('message')}}
+                    @endif
 
-        <h2>コメントする</h2>
-        <form method="post" action="{{ route('posts.comments.store', $post) }}">
-            @csrf
-            <input type="text" name="body">
-            @error('body')
+                    <p class="card-text fs-5">{!! nl2br(e($post->body)) !!}</p>
+                </div>
+            </div>
+
+            <p>
+                <a href="{{ route('posts.index') }}">一覧に戻る</a> /
+                <a href="{{ route('user.show', ['user' => $post->user]) }}">{{ $post->user->name }}さんの記事一覧</a>
+            </p>
+
+            <h2>コメントする</h2>
+            <form method="post" action="{{ route('posts.comments.store', $post) }}">
+                @csrf
+                <input type="text" name="body">
+                <button class="btn btn-primary">送信</button>
+                @error('body')
                 <p class="error">{{ $message }}</p>
-            @enderror
-            <button>送信</button>
-        </form>
+                @enderror
+            </form>
 
-    
+            <div class="card mt-3">
+                <div class="card-body">
+                    <div class="d-flex">
+                        <h2 class="card-title">コメント一覧</h2>
+                        <p class="m-1">( {{ $post->comments->count() }} )</p>
+                    </div>
 
-    <script>
-        'use strict';
+                    <ul>
+                        <!-- コメントをループで表示 -->
+                        @forelse ($post->comments as $comment)
+                        <li class="mb-3">
+                            <div class="border-bottom pb-3">
+                                <span class="fs-5">{{ $comment->user->name }}</span> {{$comment->created_at }}
 
-        {
-            const deleteForms = document.querySelectorAll('.delete-form');
+                                @can('comment-operation', $comment)
+                                <form method="post" action="{{ route('posts.comments.destroy', [$post, $comment]) }}" class="delete-form d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-outline-danger btn-sm">削除</button>
+                                </form>
+                                @endcan
+                                <br>
+                                {!! nl2br(e($comment->body)) !!}
+                            </div>
+                        </li>
+                        @empty <!-- コメントがない場合 -->
+                        <li>コメントがありません</li>
+                        @endforelse
+                    </ul>
+                </div>
+            </div>
+        </div>
 
-            deleteForms.forEach((form) => {
-                form.addEventListener('submit', (e) => {
-                    e.preventDefault();
 
-                    if (confirm('本当に削除しますか？') === false) {
-                        return;
-                    }
+        <script>
+            'use strict';
 
-                    form.submit();
+            {
+                const deleteForms = document.querySelectorAll('.delete-form');
+
+                deleteForms.forEach((form) => {
+                    form.addEventListener('submit', (e) => {
+                        e.preventDefault();
+
+                        if (confirm('本当に削除しますか？') === false) {
+                            return;
+                        }
+
+                        form.submit();
+                    });
                 });
-            });
-        }
-    </script>
+            }
+        </script>
 </x-layout>
