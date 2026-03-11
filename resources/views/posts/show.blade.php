@@ -3,7 +3,7 @@
         {{ $post->title }}・blog
         </x-slot>
 
-        <div class="container" style="max-width: 800px;">
+        <div class="container" style="max-width: 720px;">
             <div class="card">
                 <div class="card-body">
                     <h1 class="card-title">{{ $post->title }}</h1>
