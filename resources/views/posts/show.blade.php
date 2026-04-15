@@ -40,7 +40,7 @@
             </div>
 
             <p>
-                <a href="{{ route('posts.index') }}">一覧に戻る</a> /
+                <a href="{{ route('posts.index', ['post' => $post]) }}">一覧に戻る</a> /
                 <a href="{{ route('user.show', ['user' => $post->user]) }}">{{ $post->user->name }}さんの記事一覧</a>
             </p>
 
